@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard — Stackly</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+</head>
+<body class="customer-dashboard">
+  <div class="dashboard-layout">
+    <div class="sidebar-overlay"></div>
+
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="customer-dashboard.html" class="stackly-logo" aria-label="Stackly">
+          <img src="assets/images/logo3.webp" alt="Stackly">
+        </a>
+        <button class="sidebar-close" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="#" class="sidebar-link" data-section="orders"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="#" class="sidebar-link" data-section="reservations"><i class="fas fa-calendar-alt"></i> Reservations</a>
+        <a href="#" class="sidebar-link" data-section="rewards"><i class="fas fa-gift"></i> Rewards & Menu</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-navbar">
+        <div class="navbar-left">
+          <button class="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <div class="navbar-search">
+            <i class="fas fa-search"></i>
+            <input type="search" placeholder="Search dishes...">
+          </div>
+        </div>
+        <div class="navbar-right">
+          <span class="role-badge" data-user-role>Customer</span>
+          <div class="user-profile">
+            <div class="user-avatar">C</div>
+            <div class="user-info">
+              <span class="user-name" data-user-name>Customer</span>
+              <span class="user-email" data-user-email>customer@stackly.com</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-content">
+
+        <!-- Section 1: Dashboard -->
+        <section class="dashboard-section active" id="section-dashboard">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Welcome, <span data-user-name>Guest</span>!</h1>
+              <p>Your dinning dashboard — orders, rewards, and today's offers.</p>
+            </div>
+            <div class="stats-grid">
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                <div class="stat-details">
+                  <h3>Orders Placed</h3>
+                  <div class="stat-value" data-counter="ordersPlaced">0</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-gift"></i></div>
+                <div class="stat-details">
+                  <h3>Reward Points</h3>
+                  <div class="stat-value" data-counter="rewardPoints">0</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-details">
+                  <h3>Reservations</h3>
+                  <div class="stat-value" data-counter="reservations">0</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+                <div class="stat-details">
+                  <h3>Coupons</h3>
+                  <div class="stat-value" data-counter="couponsAvailable">0</div>
+                </div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-fire"></i> Today's Special Offers</h3></div>
+              <div class="offers-grid">
+                <div class="offer-card"><span class="offer-tag">50% OFF</span><h4>Weekend Pizza Feast</h4><p>Any large pizza + 2 drinks on weekends.</p></div>
+                <div class="offer-card"><span class="offer-tag">FREE</span><h4>Complimentary Dessert</h4><p>Free dessert on orders above $40.</p></div>
+                <div class="offer-card"><span class="offer-tag">2x POINTS</span><h4>Loyalty Boost</h4><p>Double reward points on dine-in orders.</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: My Orders -->
+        <section class="dashboard-section" id="section-orders">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>My Orders</h1>
+              <p>View your order history and track current deliveries.</p>
+            </div>
+            <div class="table-card data-table-wrapper" data-per-page="5">
+              <div class="table-card-header">
+                <h3><i class="fas fa-receipt"></i> Order History</h3>
+                <input type="search" class="table-search" placeholder="Search orders...">
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th data-sort>Order</th><th data-sort>Dish</th><th data-sort>Total</th><th data-sort>Date</th><th data-sort>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>#1042</td><td>Margherita Pizza</td><td>$24.50</td><td>Jun 3</td><td><span class="status-badge completed">Delivered</span></td></tr>
+                    <tr><td>#1038</td><td>Classic Burger</td><td>$18.99</td><td>May 28</td><td><span class="status-badge completed">Delivered</span></td></tr>
+                    <tr><td>#1035</td><td>Caesar Salad</td><td>$15.75</td><td>May 22</td><td><span class="status-badge completed">Delivered</span></td></tr>
+                    <tr><td>#1030</td><td>Pasta Carbonara</td><td>$22.00</td><td>May 18</td><td><span class="status-badge pending">In Progress</span></td></tr>
+                    <tr><td>#1025</td><td>Sushi Platter</td><td>$45.00</td><td>May 10</td><td><span class="status-badge completed">Delivered</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination"></div>
+            </div>
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-history"></i> Order Timeline</h3></div>
+              <div class="timeline">
+                <div class="timeline-item"><h4>Order #1042 Delivered</h4><p>Margherita Pizza — $24.50</p><div class="time">Jun 3, 2026</div></div>
+                <div class="timeline-item"><h4>Order #1038 Delivered</h4><p>Classic Burger — $18.99</p><div class="time">May 28, 2026</div></div>
+                <div class="timeline-item"><h4>Order #1035 Delivered</h4><p>Caesar Salad — $15.75</p><div class="time">May 22, 2026</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Reservations -->
+        <section class="dashboard-section" id="section-reservations">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Reservations</h1>
+              <p>Your upcoming and past table bookings.</p>
+            </div>
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-calendar-check"></i> Upcoming</h3><a href="#">Book Table</a></div>
+              <div class="fav-list">
+                <div class="fav-item">
+                  <img src="assets/images/restaurant-interior.webp" alt="Restaurant" loading="lazy">
+                  <div class="fav-item-info"><h4>Table for 2 — Window Seat</h4><p>Jun 6, 2026 at 7:30 PM · 2 guests</p></div>
+                  <span class="status-badge confirmed">Confirmed</span>
+                </div>
+                <div class="fav-item">
+                  <img src="assets/images/restaurant-interior.webp" alt="Restaurant" loading="lazy">
+                  <div class="fav-item-info"><h4>Table for 4 — Patio</h4><p>Jun 12, 2026 at 6:00 PM · 4 guests</p></div>
+                  <span class="status-badge pending">Pending</span>
+                </div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-header"><h3>Dining Activity</h3></div>
+              <div class="chart-container sm"><canvas id="customerActivityChart"></canvas></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Rewards & Menu -->
+        <section class="dashboard-section" id="section-rewards">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Rewards & Menu</h1>
+              <p>Favorite dishes, recommendations, and loyalty progress.</p>
+            </div>
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-gift"></i> Reward Points</h3></div>
+              <p style="font-size:0.9rem;color:var(--color-gray-500);">750 points until Platinum status</p>
+              <div class="loyalty-bar"><div class="loyalty-fill"></div></div>
+              <div class="loyalty-info"><span>1,250 points</span><span>Platinum: 2,000 pts</span></div>
+            </div>
+            <div class="content-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1.25rem;">
+              <div class="content-section">
+                <div class="section-header"><h3><i class="fas fa-heart"></i> Favorite Dishes</h3></div>
+                <div class="fav-list">
+                  <div class="fav-item"><img src="assets/images/food-pizza.webp" alt="Pizza" loading="lazy"><div class="fav-item-info"><h4>Margherita Pizza</h4><p>Ordered 8 times</p></div><i class="fas fa-heart heart"></i></div>
+                  <div class="fav-item"><img src="assets/images/food-burger.webp" alt="Burger" loading="lazy"><div class="fav-item-info"><h4>Classic Burger</h4><p>Ordered 5 times</p></div><i class="fas fa-heart heart"></i></div>
+                  <div class="fav-item"><img src="assets/images/food-pasta.webp" alt="Pasta" loading="lazy"><div class="fav-item-info"><h4>Pasta Carbonara</h4><p>Ordered 4 times</p></div><i class="fas fa-heart heart"></i></div>
+                </div>
+              </div>
+              <div class="content-section">
+                <div class="section-header"><h3><i class="fas fa-lightbulb"></i> Recommended For You</h3></div>
+                <div class="menu-grid">
+                  <div class="menu-item-card"><img src="assets/images/food-salad.webp" alt="Salad" loading="lazy"><div class="menu-item-info"><h4>Garden Salad</h4><div class="price">$12.99</div></div></div>
+                  <div class="menu-item-card"><img src="assets/images/dessert.webp" alt="Dessert" loading="lazy"><div class="menu-item-info"><h4>Lava Cake</h4><div class="price">$8.99</div></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="charts-grid">
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Order History</h3></div>
+                <div class="chart-container sm"><canvas id="customerOrdersChart"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Favorite Categories</h3></div>
+                <div class="chart-container sm"><canvas id="customerFavChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

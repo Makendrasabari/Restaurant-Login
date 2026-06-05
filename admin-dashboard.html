@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Stackly</title>
+  <meta name="description" content="Stackly restaurant admin dashboard — manage orders, menu, reservations and view analytics.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css">
+</head>
+<body class="admin-dashboard">
+  <div class="dashboard-layout">
+    <div class="sidebar-overlay"></div>
+
+    <!-- ═══════════ SIDEBAR (flat links — same as customer) ═══════════ -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <a href="admin-dashboard.html" class="stackly-logo" aria-label="Stackly">
+          <img src="assets/images/logo3.webp" alt="Stackly">
+        </a>
+        <button class="sidebar-close" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="#" class="sidebar-link" data-section="orders"><i class="fas fa-shopping-bag"></i> Orders</a>
+        <a href="#" class="sidebar-link" data-section="menu"><i class="fas fa-utensils"></i> Menu</a>
+        <a href="#" class="sidebar-link" data-section="reports"><i class="fas fa-chart-line"></i> Reports</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </aside>
+
+    <!-- ═══════════ MAIN ═══════════ -->
+    <div class="dashboard-main">
+      <header class="dashboard-navbar">
+        <div class="navbar-left">
+          <button class="sidebar-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+          <div class="navbar-search">
+            <i class="fas fa-search"></i>
+            <input type="search" placeholder="Search...">
+          </div>
+        </div>
+        <div class="navbar-right">
+          <span class="role-badge" data-user-role>Admin</span>
+          <div class="user-profile">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+              <span class="user-name" data-user-name>Admin</span>
+              <span class="user-email" data-user-email>admin@stackly.com</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-content">
+
+        <!-- ══════════ Section 1: Dashboard ══════════ -->
+        <section class="dashboard-section active" id="section-dashboard">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Welcome, <span data-user-name>Admin</span>!</h1>
+              <p>Your restaurant at a glance — orders, revenue, and live insights.</p>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="stats-grid">
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-details">
+                  <h3>Total Orders</h3>
+                  <div class="stat-value" data-counter="totalOrders">0</div>
+                  <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12.5% this month</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-details">
+                  <h3>Total Customers</h3>
+                  <div class="stat-value" data-counter="totalCustomers">0</div>
+                  <div class="stat-change up"><i class="fas fa-arrow-up"></i> 8.3% growth</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+                <div class="stat-details">
+                  <h3>Menu Items</h3>
+                  <div class="stat-value" data-counter="menuItems">0</div>
+                  <div class="stat-change up"><i class="fas fa-plus"></i> 5 new items</div>
+                </div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-details">
+                  <h3>Monthly Revenue</h3>
+                  <div class="stat-value" data-counter="monthlyRevenue" data-currency="true">$0</div>
+                  <div class="stat-change up"><i class="fas fa-arrow-up"></i> 18.2% increase</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid">
+              <div class="chart-card span-8">
+                <div class="chart-header"><h3>Daily Orders</h3><span class="chart-badge">This Week</span></div>
+                <div class="chart-container"><canvas id="adminOrdersChart"></canvas></div>
+              </div>
+              <div class="chart-card span-4">
+                <div class="chart-header"><h3>Popular Categories</h3></div>
+                <div class="chart-container sm"><canvas id="adminCategoriesChart"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Revenue Trend</h3><span class="chart-badge">Last 6 Months</span></div>
+                <div class="chart-container"><canvas id="adminRevenueChart"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Weekly Sales Breakdown</h3></div>
+                <div class="chart-container"><canvas id="adminSalesChart"></canvas></div>
+              </div>
+            </div>
+
+            <!-- Latest Orders Table -->
+            <div class="table-card data-table-wrapper" data-per-page="5">
+              <div class="table-card-header">
+                <h3><i class="fas fa-receipt"></i> Latest Orders</h3>
+                <input type="search" class="table-search" placeholder="Search orders...">
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th data-sort>Order ID</th><th data-sort>Customer</th><th data-sort>Items</th><th data-sort>Total</th><th data-sort>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>#ORD-1042</td><td>Sarah Mitchell</td><td>Margherita Pizza, Cola</td><td>$24.50</td><td><span class="status-badge completed">Completed</span></td></tr>
+                    <tr><td>#ORD-1041</td><td>James Chen</td><td>Classic Burger, Fries</td><td>$18.99</td><td><span class="status-badge pending">Pending</span></td></tr>
+                    <tr><td>#ORD-1040</td><td>Emily Rodriguez</td><td>Caesar Salad, Lemonade</td><td>$15.75</td><td><span class="status-badge completed">Completed</span></td></tr>
+                    <tr><td>#ORD-1039</td><td>Michael Brown</td><td>Pasta Carbonara, Wine</td><td>$32.00</td><td><span class="status-badge confirmed">Confirmed</span></td></tr>
+                    <tr><td>#ORD-1038</td><td>Lisa Wang</td><td>Sushi Platter</td><td>$45.00</td><td><span class="status-badge cancelled">Cancelled</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination"></div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-bolt"></i> Quick Actions</h3></div>
+              <div class="offers-grid">
+                <div class="offer-card"><span class="offer-tag">New</span><h4>Add Menu Item</h4><p>Update your restaurant menu with new dishes.</p></div>
+                <div class="offer-card"><span class="offer-tag">Live</span><h4>View Live Orders</h4><p>Monitor incoming orders in real time.</p></div>
+                <div class="offer-card"><span class="offer-tag">Today</span><h4>6 Reservations</h4><p>Check today's table bookings and guest list.</p></div>
+                <div class="offer-card"><span class="offer-tag">Reports</span><h4>Download Reports</h4><p>Export weekly &amp; monthly performance data.</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════ Section 2: Orders ══════════ -->
+        <section class="dashboard-section" id="section-orders">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Orders</h1>
+              <p>Manage active, completed, and reserved orders.</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                <div class="stat-details"><h3>Pending</h3><div class="stat-value">8</div><div class="stat-change up"><i class="fas fa-clock"></i> Awaiting confirmation</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                <div class="stat-details"><h3>Preparing</h3><div class="stat-value">6</div><div class="stat-change up"><i class="fas fa-utensils"></i> In kitchen</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-truck"></i></div>
+                <div class="stat-details"><h3>Out for Delivery</h3><div class="stat-value">4</div><div class="stat-change up"><i class="fas fa-motorcycle"></i> En route</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-details"><h3>Completed Today</h3><div class="stat-value">42</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> +12% vs yesterday</div></div>
+              </div>
+            </div>
+
+            <!-- Active Orders Table -->
+            <div class="table-card data-table-wrapper" data-per-page="8">
+              <div class="table-card-header">
+                <h3><i class="fas fa-spinner fa-spin"></i> Active Orders</h3>
+                <input type="search" class="table-search" placeholder="Search active orders...">
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th data-sort>Order ID</th><th data-sort>Customer</th><th data-sort>Items</th><th data-sort>Total</th><th data-sort>Type</th><th data-sort>Status</th><th>Time</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>#ORD-1043</td><td>Robert Taylor</td><td>Grilled Salmon, Sparkling Water</td><td>$28.50</td><td>Dine-in</td><td><span class="status-badge pending">Pending</span></td><td>Just now</td></tr>
+                    <tr><td>#ORD-1042</td><td>Sarah Mitchell</td><td>Margherita Pizza, Cola</td><td>$24.50</td><td>Delivery</td><td><span class="status-badge confirmed">Preparing</span></td><td>5 min</td></tr>
+                    <tr><td>#ORD-1041</td><td>James Chen</td><td>Classic Burger, Fries</td><td>$18.99</td><td>Takeaway</td><td><span class="status-badge confirmed">Ready</span></td><td>12 min</td></tr>
+                    <tr><td>#ORD-1039</td><td>Michael Brown</td><td>Pasta Carbonara, Wine</td><td>$32.00</td><td>Dine-in</td><td><span class="status-badge confirmed">Preparing</span></td><td>8 min</td></tr>
+                    <tr><td>#ORD-1037</td><td>David Kim</td><td>Steak, Mashed Potatoes</td><td>$38.50</td><td>Dine-in</td><td><span class="status-badge pending">Pending</span></td><td>3 min</td></tr>
+                    <tr><td>#ORD-1036</td><td>Anna Lee</td><td>Chicken Tikka, Naan</td><td>$22.00</td><td>Delivery</td><td><span class="status-badge completed">Delivered</span></td><td>22 min</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination"></div>
+            </div>
+
+            <!-- Live Order Feed -->
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-stream"></i> Live Order Feed</h3></div>
+              <div class="live-feed">
+                <div class="feed-item"><span class="feed-time">Just now</span><span class="feed-badge new">NEW</span> Order #1043 — Grilled Salmon, Sparkling Water — <strong>$28.50</strong></div>
+                <div class="feed-item"><span class="feed-time">2 min ago</span><span class="feed-badge preparing">PREP</span> Order #1042 — Margherita Pizza, Cola — <strong>$24.50</strong></div>
+                <div class="feed-item"><span class="feed-time">5 min ago</span><span class="feed-badge ready">READY</span> Order #1041 — Classic Burger, Fries — <strong>$18.99</strong></div>
+                <div class="feed-item"><span class="feed-time">8 min ago</span><span class="feed-badge delivered">DONE</span> Order #1040 — Caesar Salad, Lemonade — <strong>$15.75</strong></div>
+                <div class="feed-item"><span class="feed-time">12 min ago</span><span class="feed-badge new">NEW</span> Order #1039 — Pasta Carbonara, Wine — <strong>$32.00</strong></div>
+              </div>
+            </div>
+
+            <!-- Reservations -->
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-calendar-check"></i> Today's Reservations</h3><a href="#">View All</a></div>
+              <div class="fav-list">
+                <div class="fav-item">
+                  <img src="assets/images/restaurant-interior.webp" alt="Restaurant" loading="lazy">
+                  <div class="fav-item-info"><h4>Table 5 — Window Seat</h4><p>7:00 PM · 4 guests · John Smith</p></div>
+                  <span class="status-badge confirmed">Confirmed</span>
+                </div>
+                <div class="fav-item">
+                  <img src="assets/images/restaurant-interior.webp" alt="Restaurant" loading="lazy">
+                  <div class="fav-item-info"><h4>Table 12 — Private Room</h4><p>8:30 PM · 8 guests · Corporate Event</p></div>
+                  <span class="status-badge pending">Pending</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════ Section 3: Menu ══════════ -->
+        <section class="dashboard-section" id="section-menu">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Menu Management</h1>
+              <p>Manage food items, categories, and inventory.</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-drumstick-bite"></i></div>
+                <div class="stat-details"><h3>Food Items</h3><div class="stat-value">142</div><div class="stat-change up"><i class="fas fa-plus"></i> 5 new this week</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="stat-details"><h3>Categories</h3><div class="stat-value">12</div><div class="stat-change up"><i class="fas fa-tags"></i> Active categories</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-star"></i></div>
+                <div class="stat-details"><h3>Top Rated</h3><div class="stat-value">4.8</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> Avg. rating</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-boxes-stacked"></i></div>
+                <div class="stat-details"><h3>Low Stock</h3><div class="stat-value">3</div><div class="stat-change up"><i class="fas fa-exclamation-triangle"></i> Needs reorder</div></div>
+              </div>
+            </div>
+
+            <!-- Food Items Table -->
+            <div class="table-card data-table-wrapper" data-per-page="6">
+              <div class="table-card-header">
+                <h3><i class="fas fa-drumstick-bite"></i> Food Items</h3>
+                <input type="search" class="table-search" placeholder="Search menu items...">
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th data-sort>Item</th><th data-sort>Category</th><th data-sort>Price</th><th data-sort>Orders</th><th data-sort>Rating</th><th data-sort>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Margherita Pizza</td><td>Pizza</td><td>$14.99</td><td>342</td><td>4.9</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Classic Burger</td><td>Burgers</td><td>$12.99</td><td>285</td><td>4.7</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Pasta Carbonara</td><td>Pasta</td><td>$16.99</td><td>198</td><td>4.8</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Caesar Salad</td><td>Salads</td><td>$11.99</td><td>156</td><td>4.6</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Grilled Salmon</td><td>Seafood</td><td>$22.99</td><td>124</td><td>4.9</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Sushi Platter</td><td>Japanese</td><td>$34.99</td><td>98</td><td>4.8</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Lava Cake</td><td>Desserts</td><td>$8.99</td><td>210</td><td>4.9</td><td><span class="status-badge completed">Active</span></td></tr>
+                    <tr><td>Chicken Tikka</td><td>Indian</td><td>$15.99</td><td>178</td><td>4.7</td><td><span class="status-badge pending">Low Stock</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination"></div>
+            </div>
+
+            <!-- Inventory Alerts -->
+            <div class="content-section">
+              <div class="section-header"><h3><i class="fas fa-exclamation-circle"></i> Inventory Alerts</h3></div>
+              <div class="notification-list">
+                <div class="notif-item urgent"><i class="fas fa-exclamation-triangle"></i><div class="notif-body"><strong>Low Stock:</strong> Salmon fillets — only 3 portions remaining. Reorder immediately.<span class="notif-time">5 min ago</span></div></div>
+                <div class="notif-item warning"><i class="fas fa-clock"></i><div class="notif-body"><strong>Expiring Soon:</strong> Fresh Basil batch expires in 2 days — use or discard.<span class="notif-time">1 hr ago</span></div></div>
+                <div class="notif-item info"><i class="fas fa-truck"></i><div class="notif-body"><strong>Delivery Incoming:</strong> Produce order from FreshFarms arriving tomorrow at 6 AM.<span class="notif-time">3 hr ago</span></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════ Section 4: Reports ══════════ -->
+        <section class="dashboard-section" id="section-reports">
+          <div class="section-panel-inner">
+            <div class="page-header">
+              <h1>Reports &amp; Analytics</h1>
+              <p>Sales analytics, revenue trends, and customer insights.</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="stat-details"><h3>This Month</h3><div class="stat-value" data-currency="true">$24,500</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 18% growth</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="stat-details"><h3>Avg. Order Value</h3><div class="stat-value" data-currency="true">$28.50</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> +$2.10</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
+                <div class="stat-details"><h3>New Customers</h3><div class="stat-value">124</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 15% this month</div></div>
+              </div>
+              <div class="stat-card" data-tilt>
+                <div class="stat-icon"><i class="fas fa-redo"></i></div>
+                <div class="stat-details"><h3>Repeat Rate</h3><div class="stat-value">68%</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> +5% improvement</div></div>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Revenue Trend</h3><span class="chart-badge">6 Months</span></div>
+                <div class="chart-container"><canvas id="adminRevenueChart2"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Sales by Channel</h3></div>
+                <div class="chart-container"><canvas id="adminSalesChart2"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Reservations Trend</h3><span class="chart-badge">Monthly</span></div>
+                <div class="chart-container"><canvas id="adminReservationsChart"></canvas></div>
+              </div>
+              <div class="chart-card span-6">
+                <div class="chart-header"><h3>Customer Segments</h3></div>
+                <div class="chart-container sm"><canvas id="adminCustomerChart"></canvas></div>
+              </div>
+            </div>
+
+            <!-- Top Customers -->
+            <div class="table-card data-table-wrapper" data-per-page="5">
+              <div class="table-card-header">
+                <h3><i class="fas fa-crown"></i> Top Customers</h3>
+                <input type="search" class="table-search" placeholder="Search customers...">
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr><th data-sort>Customer</th><th data-sort>Orders</th><th data-sort>Total Spent</th><th data-sort>Avg. Order</th><th data-sort>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Sarah Mitchell</td><td>28</td><td>$842</td><td>$30.07</td><td><span class="status-badge completed">Platinum</span></td></tr>
+                    <tr><td>James Chen</td><td>22</td><td>$615</td><td>$27.95</td><td><span class="status-badge confirmed">Gold</span></td></tr>
+                    <tr><td>Emily Rodriguez</td><td>19</td><td>$534</td><td>$28.10</td><td><span class="status-badge confirmed">Gold</span></td></tr>
+                    <tr><td>Michael Brown</td><td>15</td><td>$420</td><td>$28.00</td><td><span class="status-badge pending">Silver</span></td></tr>
+                    <tr><td>Lisa Wang</td><td>12</td><td>$356</td><td>$29.67</td><td><span class="status-badge pending">Silver</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-pagination"></div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
