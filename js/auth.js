@@ -70,6 +70,9 @@ const Auth = (() => {
     } else if (!emailRegex.test(loginId)) {
       errors.push('Please enter a valid email format (e.g. name@example.com).');
     }
+    if (!password || !password.trim()) {
+      errors.push('Please enter a password.');
+    }
 
     if (errors.length) return { success: false, errors };
 
@@ -93,8 +96,8 @@ const Auth = (() => {
   };
 
   /* ══════════════════════════════════════════════
-     SIGN IN — no password check, no role mismatch,
-     auto-creates user if not found
+     SIGN IN — requires password and verifies it
+     against the stored user record
   ══════════════════════════════════════════════ */
   const login = ({ role, email, password, remember }) => {
     const errors = [];
@@ -107,14 +110,16 @@ const Auth = (() => {
     } else if (!emailRegex.test(loginId)) {
       errors.push('Please enter a valid email format (e.g. name@example.com).');
     }
+    if (!password || !password.trim()) {
+      errors.push('Please enter your password.');
+    }
 
     if (errors.length) return { success: false, errors };
 
-    // Try to find an existing user with this email
+    // Find existing user with this email, or auto-create one
     let user = getUsers().find((u) => u.email === loginId) || null;
 
     if (!user) {
-      // Auto-create user if account doesn't exist
       user = {
         id: Date.now().toString(36) + Math.random().toString(36).slice(2),
         fullName: email.split('@')[0],
