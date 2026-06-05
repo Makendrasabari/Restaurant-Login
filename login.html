@@ -401,10 +401,6 @@
   <script src="js/script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      /* ── Already logged in? redirect ── */
-      const session = Auth.getSession();
-      if (session) { Auth.redirectToDashboard(session.role); return; }
-
       const alertEl   = document.getElementById('authAlert');
       const successEl = document.getElementById('authSuccess');
       const tabs      = document.querySelectorAll('.auth-tab');
